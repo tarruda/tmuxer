@@ -1,6 +1,6 @@
 # smux
 
-> Set of shell scripts to improve your tmux experience
+> Shell scripts to improve your tmux experience
 
 ## Installation
 

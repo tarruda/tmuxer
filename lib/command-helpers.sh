@@ -39,3 +39,33 @@ t() {
 	echo "$1" | sed "1d"
 }
 
+check_session() {
+	if [ -z "$1" ]; then
+		echo 'No session name was provided' >&2
+		exit 1
+	fi
+
+	name="$1"
+	location="$SMUX_REPOSITORIES/$name"
+
+	if [ ! -e "$location" ]; then
+		echo "Session '$name' doesn't exist"
+		exit 1
+	fi
+
+	repository="$location"
+
+	if [ -f "$location" ]; then
+		if [ -r "$location" ]; then
+			repository="$(cat "$location")"
+		else
+			echo "Cannot read '$location'" >&2
+			exit 1
+		fi
+	fi
+
+	if [ ! -d "$repository" ]; then
+		echo "Repository for '$name' is not a directory"
+		exit 1
+	fi
+}

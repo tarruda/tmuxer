@@ -13,7 +13,7 @@ done
 shift $(expr $OPTIND - 1)
 
 if [ -z "$1" ]; then
-	echo 'Scripted session needs a name' >&2
+	echo 'Need a session name' >&2
 	exit 1
 fi
 

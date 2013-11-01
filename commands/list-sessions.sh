@@ -4,6 +4,8 @@ shorthelp "Print registered sessions" "$@"
 
 if [ -d "$SMUX_REPOSITORIES" ]; then
 	for file in "$SMUX_REPOSITORIES"/*; do
-		echo "${file##*/}"
+		file="${file##*/}"
+		[ "$file" = "*" ] && continue
+		echo "$file"
 	done
 fi

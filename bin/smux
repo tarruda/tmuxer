@@ -62,7 +62,7 @@ usage() {
 	echo "Usage: smux [<command>] [<args>]\n" >&2
   echo "Where command can be one of:\n" >&2
 
-	sh "$SMUX_ROOT/commands/list-commands.sh" | while read description; do
+	sh -e "$SMUX_ROOT/commands/list-commands.sh" | while read description; do
 		echo "  $description" >&2
 	done
 	echo
@@ -99,7 +99,7 @@ run() {
 			fi
 			;;
 		*)
-			sh "$script" "$@"
+			sh -e "$script" "$@"
 			;;
 	esac
 }
