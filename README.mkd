@@ -1,0 +1,21 @@
+# smux
+
+> Set of shell scripts to improve your tmux experience
+
+## Installation
+
+```sh
+git clone git://github.com/tarruda/smux ~/.smux
+```
+
+Then make sure ~/.smux/bin/smux is found on the PATH:
+
+```sh
+echo 'export PATH="$HOME/.smux/bin:\$PATH"' >> [your shell initialization file]
+```
+
+Adding a symlink to an existing PATH directory will also do the trick
+
+```sh
+ln -s ~/.smux/bin/smux ~/bin/smux
+```

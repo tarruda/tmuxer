@@ -1,0 +1,109 @@
+#!/usr/bin/env sh
+
+check() {
+	local tmux_version cmd
+	# Validate the installed tmux version
+	tmux_version="$(tmux -V 2> /dev/null)"
+
+	if [ ${#tmux_version} -eq 0 ]; then
+		echo 'tmux is not installed' >&2
+		exit 1
+	fi
+
+	set $tmux_version
+
+	tmux_version=$2
+	tmux_version=$(echo "$tmux_version" | sed -e 's/\.//g')
+
+	if [ $tmux_version -lt 17 ]; then
+		echo 'tmux version must be at least 1.7' >&2
+		exit 1
+	fi
+
+	for cmd in 'tput' 'stty' 'sed' 'dd'; do
+		if ! which "$cmd" > /dev/null 2>&1; then
+			echo "smux depends on the '$cmd' command, but it doesn't appear to be installed "
+			exit 1
+		fi
+	done
+
+	if [ -z "$EDITOR" ]; then
+		echo 'Set your $EDITOR environment variable'
+		exit 1
+	fi
+}
+
+setup() {
+	local path
+	path="$0"
+	if [ "$path" = "${path#.}" ] || [ "$path" = "${path#/}" ]; then
+		# Invoked as a shell command, need to resolve the full path
+		path="$(which "$path" 2> /dev/null)"
+		if [ -z "$path" ]; then
+			echo "Could not resolve absolute path for '$0'" >&2
+			exit 1
+		fi
+	fi
+	if which readlink > /dev/null 2>&1; then
+		path="$(readlink -f "$path")"
+	fi
+	path="${path%/*}"
+	path="$(cd "$path"; pwd)"
+	SMUX_ROOT="${path%/*}" 
+	export SMUX_ROOT
+
+	if [ -z "$SMUX_REPOSITORIES" ]; then
+		SMUX_REPOSITORIES="$HOME/.smux-sessions"
+		export SMUX_REPOSITORIES
+	fi
+}
+
+usage() {
+	echo "Usage: smux [<command>] [<args>]\n" >&2
+  echo "Where command can be one of:\n" >&2
+
+	sh "$SMUX_ROOT/commands/list-commands.sh" | while read description; do
+		echo "  $description" >&2
+	done
+	echo
+}
+
+run() {
+	cmd="$1"
+	[ -z "$cmd" ] && cmd="select"
+
+	script="$SMUX_ROOT/commands/${cmd}.sh"
+	if [ ! -r "$script" ]; then
+	 	usage
+		exit 1
+	fi
+
+	[ $# -gt 0 ] && shift
+
+	case $cmd in
+		help)
+			usage
+			exit
+			;;
+		select)
+			if [ "$1" = "--shorthelp" ]; then
+				sh "$script" "$@"
+			fi
+			if [ -n "$TMUX" ]; then
+				# When invoked from inside tmux, create a new window just to run the
+				# selection menu
+				tmux new-window -n 'choose session' "sh '$script'"
+			else
+				# Or just invoke directly
+				sh "$script"
+			fi
+			;;
+		*)
+			sh "$script" "$@"
+			;;
+	esac
+}
+
+check
+setup "$0"
+run "$@"
