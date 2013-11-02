@@ -92,10 +92,10 @@ run() {
 			if [ -n "$TMUX" ]; then
 				# When invoked from inside tmux, create a new window just to run the
 				# selection menu
-				tmux new-window -n 'choose session' "sh '$script'"
+				tmux new-window -n 'choose session' "SMUX_ROOT='$SMUX_ROOT' sh -e '$script'"
 			else
 				# Or just invoke directly
-				sh "$script"
+				sh -e "$script"
 			fi
 			;;
 		*)

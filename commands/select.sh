@@ -47,9 +47,9 @@ tmp="$(smux list-sessions)"
 while [ ${#tmp} -gt 0 ]; do
 	e="$(h "$tmp")"
 	tmp="$(t "$tmp")"
-	id="$(tmux display -p -t "$e" '#{session_id}')"
 	# if session is running, add session id separated by colon
-	if tmux has-session -t "$e" 2> /dev/null; then
+	if tmux has-session -t "$e" > /dev/null 2>&1; then
+		id="$(tmux display -p -t "$e" '#{session_id}')"
 		stat="(open, id = $id)"
 	else
 		stat="(closed)"
@@ -68,14 +68,13 @@ done
 unmanaged_index=$count
 running="$(tmux list-sessions -F '#{session_name}:#{session_id}')"
 
-set $ids
 while [ ${#running} -gt 0 ]; do
 	e="$(h "$running")"
 	running="$(t "$running")"
 	id="${e##*:}"
 	name="${e%:*}"
 	found=
-	for i in $*; do
+	for i in $ids; do
 		[ "$i" = "$id" ] && found=1 && break
 	done
 	if [ -z "$found" ]; then
