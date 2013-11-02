@@ -1,6 +1,6 @@
 . "$SMUX_ROOT/lib/command-helpers.sh"
 
-shorthelp "Remove a registered scripted session" "$@"
+shorthelp "Remove a registered session" "$@"
 
 
 check_session "$@"

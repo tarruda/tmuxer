@@ -1,6 +1,6 @@
 . "$SMUX_ROOT/lib/command-helpers.sh"
 
-shorthelp "Create and register a new scripted session" "$@"
+shorthelp "Create and register a new session" "$@"
 
 
 while getopts t:d: optl; do
@@ -21,7 +21,7 @@ name="$1"
 location="$SMUX_REPOSITORIES/$name"
 
 if [ -e "$location" ]; then
-	echo "Scripted session '$name' already exists" >&2
+	echo "Session '$name' already exists" >&2
 	exit 1
 fi
 

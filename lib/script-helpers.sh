@@ -51,7 +51,16 @@ window() {
 	shift $(expr $OPTIND - 1)
 
 	[ -z "$o_dir" ] && o_dir="$session_root"
-	[ -n "$o_dir" ] && o_dir="$(cd "$o_dir" 2> /dev/null && pwd)"
+
+	if [ -n "$o_dir" ]; then
+		# force tilde expansions
+		eval o_dir="$o_dir"
+		if [ ! -d "$o_dir" ]; then
+			echo "'$o_dir' doesn't exist" >&2
+			exit 1
+		fi
+	 	o_dir="$(cd "$o_dir" 2> /dev/null && pwd)"
+	fi
 
 	if [ -z "$session_id" ]; then
 		# Session wasn't created yet, do it now
@@ -77,7 +86,7 @@ window() {
 		[ -n "$o_dir" ] && args="$args -c '$o_dir'"
 	 	args="$args -F '#{window_id}'"
 		[ -n "$o_name" ] && args="$args -n '$o_name'"
-		args="$args -t '${session_id}.'"
+		args="$args -t '${session_id}'"
 
 		window_id="$(eval "tmux new-window $args" "$@")"
 		pane_id="$(tmux display -p -t "$session_id" '#{pane_id}')"
