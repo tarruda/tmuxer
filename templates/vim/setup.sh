@@ -35,4 +35,4 @@ cmd "VIM_SESSION='${vim_session}' vim -c '${setup_cmd}' -c '${teardown_cmd}'"
 
 # Save the vim pane id as a tmux session option. This will be used to
 # gracefully shutdown vim later. To edit the teardown script, enter
-setk vim-pane $pane_id
+seto vim-pane $pane_id

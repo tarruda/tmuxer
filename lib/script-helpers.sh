@@ -4,19 +4,17 @@ pane() {
 	local o_target
 	local o_dir
 	local o_percentage
-	local o_length
+	local o_size
 	local o_horizontal
 	local args
 
-	while getopts dt:c:PF:hvp:l: opt; do
+	while getopts dt:c:PF:hp:l: opt; do
 		case $opt in
 			t) o_target="$OPTARG" ;;
 			c) o_dir="$OPTARG" ;;
 			p) o_percentage="$OPTARG" ;;
 			l) o_size="$OPTARG" ;;
 			h) o_horizontal=1 ;;
-			# other options are passed through
-			*) other="$other -$opt $OPTARG" ;;
 		esac
 	done
 
@@ -28,13 +26,11 @@ pane() {
 	[ -n "$o_horizontal" ] && args="-h"
 	[ -n "$o_dir" ] && args="$args -c '$o_dir'"
 	args="$args -P -F '#{pane_id}'"
-	[ -n "$o_percentage" ] && args="$args -p '$o_percentage'"
-	[ -n "$o_size" ] && args="$args -l '$o_size'"
+	[ -n "$o_percentage" ] && args="$args -p $o_percentage"
+	[ -n "$o_size" ] && args="$args -l $o_size"
 	args="$args -t '$o_target'"
 
-	args="tmux split-window ${args}"
-
-	pane_id=$(eval "$args")
+	pane_id=$(eval "tmux split-window $args" "$@")
 }
 
 # Create a new window with a name as argument. If no windows were created,
@@ -64,12 +60,10 @@ window() {
 		# Set the initial window name
 		[ -n "$o_name" ] && args="$args -n '$o_name'"
 
-		args="TMUX= tmux new-session $args"
-
 		if [ -n "$o_dir" ]; then
-			session_id="$(cd "$o_dir" && eval "$args" "$@")"
+			session_id="$(cd "$o_dir" && eval "TMUX= tmux new-session $args" "$@")"
 		else
-			session_id="$(eval "$args" "$@")"
+			session_id="$(eval "TMUX= tmux new-session $args" "$@")"
 		fi
 
 		if [ -n "$session_root" ]; then
@@ -83,10 +77,9 @@ window() {
 		[ -n "$o_dir" ] && args="$args -c '$o_dir'"
 	 	args="$args -F '#{window_id}'"
 		[ -n "$o_name" ] && args="$args -n '$o_name'"
+		args="$args -t '${session_id}.'"
 
-		args="tmux new-window $args $rest"
-
-		window_id="$(eval "$args" "$@")"
+		window_id="$(eval "tmux new-window $args" "$@")"
 		pane_id="$(tmux display -p -t "$session_id" '#{pane_id}')"
 	fi
 }
@@ -106,7 +99,7 @@ send() {
 
 	shift $(expr $OPTIND - 1)
 
-	tmux send-keys -t "$o_target" $rest "$@"
+	tmux send-keys $rest -t "$o_target" "$@"
 }
 
 # Send a command(keys + return) to the current pane or a pane specified with
@@ -116,7 +109,7 @@ cmd() {
   local o_target
 	local rest
 
-	while getopts t: opt; do
+	while getopts t:R opt; do
 		case $opt in
 			t) o_target="$OPTARG" ;;
 			*) rest="$rest -$opt $OPTARG"
@@ -132,12 +125,12 @@ cmd() {
 }
 
 # Silently set option in the current session
-setk() {
+seto() {
 	tmux set-option -t "$session_id" -q "@$1" "$2"
 }
 
 # Get option in the current session
-getk() {
+geto() {
 	tmux show-options -t "$session_id" -v "@$1" 2> /dev/null
 }
 

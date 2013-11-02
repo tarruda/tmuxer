@@ -1,5 +1,5 @@
 # Get the vim pane id
-vim_pane_id=$(getk vim-pane)
+vim_pane_id=$(geto vim-pane)
 
 # Send escape to ensure vim is in normal mode
 send -t $vim_pane_id "Escape"
