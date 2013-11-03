@@ -62,6 +62,8 @@ count=0
 # last opened session
 [ -r "$TMUXER_CONFIG/last-session" ] &&\
  	last_session="$(cat "$TMUXER_CONFIG/last-session" 2> /dev/null)"
+[ -n "$TMUX" ] &&\
+ 	running_session_id="\$${TMUX##*,}"
 
 # Add 
 tmp="$(sh "$TMUXER_ROOT/commands/list-sessions.sh")"
@@ -69,13 +71,13 @@ echo "$tmp"
 while [ ${#tmp} -gt 0 ]; do
 	e="$(h "$tmp")"
 	tmp="$(t "$tmp")"
-	# if [ "$e" = "$last_session" ]; then
-	# 	selected=$count
-	# fi
+
+	[ "$e" = "$last_session" ] && selected=$count
 	# if session is running, add session id separated by colon
 	if tmux has-session -t "$e" > /dev/null 2>&1; then
 		id="$(tmux display -p -t "$e" '#{session_id}')"
 		stat="(open, id = $id)"
+		[ "$id" = "$running_session_id" ] && selected=$count
 	else
 		stat="(closed)"
 	fi
@@ -92,10 +94,6 @@ done
 unmanaged_index=$count
 running="$(tmux list-sessions -F '#{session_name}:#{session_id}')"
 
-if [ -n "$TMUX" ]; then
-	running_session_id="\$${TMUX##*,}"
-fi
-
 while [ ${#running} -gt 0 ]; do
 	e="$(h "$running")"
 	running="$(t "$running")"
@@ -106,11 +104,7 @@ while [ ${#running} -gt 0 ]; do
 		[ "$i" = "$id" ] && found=1 && break
 	done
 	if [ -z "$found" ]; then
-
-		# if [ "$id" = "$running_session_id" ]; then
-		# 	selected=$count
-		# fi
-
+		[ "$id" = "$running_session_id" ] && selected=$count
 		stat="(unmanaged, id = $id)"
 		name="$(printf "%-$((columns - 30))s %-25s" "$name" "$stat")"
 		if [ -n "$sessions" ]; then

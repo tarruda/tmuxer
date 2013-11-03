@@ -12,8 +12,9 @@ if ! tmux has-session -t "$name" > /dev/null 2>&1; then
 		echo "No windows were created" >&2
 		exit 1
 	fi
-	echo "$name" > "$TMUXER_CONFIG/last-session"
 fi
+
+echo "$name" > "$TMUXER_CONFIG/last-session"
 
 if [ -z "$TMUX" ]; then
 	tmux attach-session -t "$name"
