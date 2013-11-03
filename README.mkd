@@ -82,3 +82,86 @@ script
 sudo -E -u [your username] [path to tmuxer install dir]/bin/tmuxer close
 end script
 ```
+
+## Session script helpers
+Tmuxer provides some helper functions around tmux commands to make scripting
+easier.
+
+Helpers that take session/window/pane as option arguments will by default use
+the values of `$session_id` `$window_id` and `$pane_id` which are updated
+automatically when creating windows/panes
+
+Helpers will also accept most options that can be passed to tmux commands(most
+will let the target be overriden with '-t')
+
+####window
+Create a window(or the session if its the first window) and update the
+variables `$window_id` and `$pane_id`
+
+####pane
+Split a pane and update the variable `$pane_id`
+
+####send
+Wrapper around 'send-keys' that will by default use the current value of
+`$pane_id`.
+
+####cmd
+Wrapper around 'send' that will automatically append 'C-m'(enter) to the end.
+
+####seto
+Wrapper around 'set-option' that sets the value of user options by inserting '@' in the
+option name.
+
+####geto
+Wrapper around 'show-options' that retrieves the value of user options by
+inserting '@' in the option name.
+
+##Example:
+
+The following example is taken from the vim template, which setups everything
+needed for a vim editing session:
+
+####setup.sh
+```sh
+# Project root has to be set before anything else
+session_root="~/projects/my-project"
+
+# Create the main window and set its name to 'editor'
+window -n editor
+
+# Create a pane at the bottom with 75% of window height. This is where you will
+# be running vim
+pane -p 75
+
+# Vim has a session persistence system, initialize vim with a command to
+# persist its session in the session repository
+vim_session="$repository/session.vim"
+setup_cmd='mksession! $VIM_SESSION'
+
+# If the vim session file exists, load the session instead of saving
+if [ -e "$vim_session" ]; then
+	setup_cmd='so $VIM_SESSION'
+fi
+
+# When vim exits, save the session back to the file
+teardown_cmd='au VimLeavePre * mksession! $VIM_SESSION'
+
+# Open vim passing its startup commands as -c arguments
+cmd "VIM_SESSION='${vim_session}' exec vim -c '${setup_cmd}' -c '${teardown_cmd}'"
+
+# Save the vim pane id as a tmux session option. This will be used to
+# gracefully shutdown vim later. To edit the teardown script, enter
+seto vim-pane $pane_id
+```
+
+#### teardown.sh
+```sh
+# Get the vim pane id
+vim_pane_id=$(geto vim-pane 2> /dev/null)
+
+# Send escape to ensure vim is in normal mode
+send -t $vim_pane_id "Escape"
+
+# Write all buffers and quit vim
+cmd -t $vim_pane_id ":wqa"
+```
