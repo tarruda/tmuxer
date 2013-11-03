@@ -35,7 +35,7 @@ if [ ! -d "$template_dir" ]; then
 	exit 1
 fi
 
-mkdir -m 700 "$o_repository"
+mkdir "$o_repository"
 
 for file in "$template_dir"/*; do
 	out="${file##*/}"

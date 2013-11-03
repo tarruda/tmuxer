@@ -31,6 +31,9 @@ update() {
 		current=$((current + 1))
 	done
 }
+# get the numbers of lines/columns
+lines=$(tput lines)
+columns=$(tput cols)
 
 # selected entry index
 selected=0
@@ -43,10 +46,19 @@ ids=""
 
 # total number of sessions
 count=0
-tmp="$(smux list-sessions)"
+
+# last opened session
+[ -r "$SMUX_CONFIG/last-session" ] &&\
+ 	last_session="$(cat "$SMUX_CONFIG/last-session" 2> /dev/null)"
+
+# Add 
+tmp="$(sh "$SMUX_ROOT/commands/list-sessions.sh")"
 while [ ${#tmp} -gt 0 ]; do
 	e="$(h "$tmp")"
 	tmp="$(t "$tmp")"
+	if [ "$e" = "$last_session" ]; then
+		selected=$count
+	fi
 	# if session is running, add session id separated by colon
 	if tmux has-session -t "$e" > /dev/null 2>&1; then
 		id="$(tmux display -p -t "$e" '#{session_id}')"
@@ -54,8 +66,7 @@ while [ ${#tmp} -gt 0 ]; do
 	else
 		stat="(closed)"
 	fi
-	stat="$(printf "%-25s" "$stat")"
-	e="$(printf "%-$((columns - 30))s %s" "$e" "$stat")"
+	e="$(printf "%-$((columns - 30))s %-25s" "$e" "$stat")"
 	if [ -n "$sessions" ]; then
 		sessions="$sessions\n$e"
 	else
@@ -68,10 +79,19 @@ done
 unmanaged_index=$count
 running="$(tmux list-sessions -F '#{session_name}:#{session_id}')"
 
+if [ -n "$TMUX" ]; then
+	running_session_id="\$${TMUX##*,}"
+fi
+
 while [ ${#running} -gt 0 ]; do
 	e="$(h "$running")"
 	running="$(t "$running")"
 	id="${e##*:}"
+
+	if [ "$id" = "$running_session_id" ]; then
+		selected=$count
+	fi
+
 	name="${e%:*}"
 	found=
 	for i in $ids; do
@@ -79,9 +99,12 @@ while [ ${#running} -gt 0 ]; do
 	done
 	if [ -z "$found" ]; then
 		stat="(unmanaged, id = $id)"
-		stat="$(printf "%-25s" "$stat")"
-		name="$(printf "%-$((columns - 30))s %s" "$name" "$stat")"
-		sessions="$sessions\n$name"
+		name="$(printf "%-$((columns - 30))s %-25s" "$name" "$stat")"
+		if [ -n "$sessions" ]; then
+			sessions="$sessions\n$name"
+		else
+			sessions="$name"
+		fi
 		count=$((count + 1))
 	fi
 done
@@ -96,10 +119,6 @@ trap "exit 1" INT TERM
 trap "tput cnorm; tput clear; tput cup 0 0" EXIT
 # erase cursor
 tput civis
-
-# get the numbers of lines/columns
-lines=$(tput lines)
-columns=$(tput cols)
 
 # hilight=$(tput smso)
 # normal=$(tput rmso)
@@ -143,7 +162,7 @@ while [ $selected -ge 1 ]; do
 	selected=$((selected - 1))
 done
 
-e=$(h $tmp)
+e="$(h $tmp)"
 
 
 if [ $index -ge $unmanaged_index ]; then
@@ -153,5 +172,5 @@ if [ $index -ge $unmanaged_index ]; then
 		tmux switch-client -t "$e"
 	fi
 else
-	smux open "$e"
+	sh "$SMUX_ROOT/commands/open.sh"
 fi

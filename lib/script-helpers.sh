@@ -1,5 +1,10 @@
 # Split a pane and set the splitted pane id to $pane_id
 pane() {
+	if [ -z "$session_id" ]; then
+		echo 'Create a window first' >&2
+		exit 1
+	fi
+
 	local opt
 	local o_target
 	local o_dir
@@ -95,6 +100,11 @@ window() {
 
 # Send keys to the current pane or a pane specified with '-t'
 send() {
+	if [ -z "$session_id" ]; then
+		echo 'Create a window first' >&2
+		exit 1
+	fi
+
 	local opt
   local o_target
 	local rest
@@ -114,6 +124,11 @@ send() {
 # Send a command(keys + return) to the current pane or a pane specified with
 # '-t'
 cmd() {
+	if [ -z "$session_id" ]; then
+		echo 'Create a window first' >&2
+		exit 1
+	fi
+
 	local opt
   local o_target
 	local rest
@@ -135,11 +150,21 @@ cmd() {
 
 # Silently set option in the current session
 seto() {
+	if [ -z "$session_id" ]; then
+		echo 'Create a window first' >&2
+		exit 1
+	fi
+
 	tmux set-option -t "$session_id" -q "@$1" "$2"
 }
 
 # Get option in the current session
 geto() {
+	if [ -z "$session_id" ]; then
+		echo 'Create a window first' >&2
+		exit 1
+	fi
+
 	tmux show-options -t "$session_id" -v "@$1" 2> /dev/null
 }
 

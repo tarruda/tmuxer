@@ -1,6 +1,6 @@
 . "$SMUX_ROOT/lib/command-helpers.sh"
 
-shorthelp "Edit a script in the session repository" "$@"
+shorthelp "Edits a script in the session repository" "$@"
 
 
 check_session "$@"

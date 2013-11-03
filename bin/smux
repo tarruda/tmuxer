@@ -52,10 +52,17 @@ setup() {
 	SMUX_ROOT="${path%/*}" 
 	export SMUX_ROOT
 
-	if [ -z "$SMUX_REPOSITORIES" ]; then
-		SMUX_REPOSITORIES="$HOME/.smux-sessions"
-		export SMUX_REPOSITORIES
+	if [ -z "$SMUX_CONFIG" ]; then
+		SMUX_CONFIG="$HOME/.smux"
+		export SMUX_CONFIG
 	fi
+
+	[ -d "$SMUX_CONFIG" ] || mkdir -m 700 "$SMUX_CONFIG"
+
+	SMUX_REPOSITORIES="$SMUX_CONFIG/sessions"
+	export SMUX_REPOSITORIES
+
+	[ -d "$SMUX_REPOSITORIES" ] || mkdir "$SMUX_REPOSITORIES"
 }
 
 usage() {
