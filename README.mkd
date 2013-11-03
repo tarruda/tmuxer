@@ -1,6 +1,6 @@
 # tmuxer
 
-Command-line utility that makes easily managing tmux scripted sessions.
+Command-line utility that makes easy to manage tmux scripted sessions.
 
 The following subcommands are provided:
 
