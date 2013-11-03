@@ -13,7 +13,7 @@ fi
 for name in $sessions; do
 	check_session "$name"
 
-	tmux has-session -t "$name" || continue
+	tmux has-session -t "$name" 2> /dev/null || continue
 
 	if [ -r "$repository/teardown.sh" ]; then
 		# For consistency with the setup script, populate {session,window,pane}_id

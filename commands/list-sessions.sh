@@ -2,8 +2,8 @@
 
 shorthelp "Prints registered sessions" "$@"
 
-if [ -d "$TMUXER_REPOSITORIES" ]; then
-	for file in "$TMUXER_REPOSITORIES"/*; do
+if [ -d "$TMUXER_CONFIG/sessions" ]; then
+	for file in "$TMUXER_CONFIG/sessions"/*; do
 		file="${file##*/}"
 		[ "$file" = "*" ] && continue
 		echo "$file"

@@ -18,7 +18,7 @@ if [ -z "$1" ]; then
 fi
 
 name="$1"
-location="$TMUXER_REPOSITORIES/$name"
+location="$TMUXER_CONFIG/sessions/$name"
 
 if [ -e "$location" ]; then
 	echo "Session '$name' already exists" >&2

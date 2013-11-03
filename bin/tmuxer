@@ -63,11 +63,7 @@ setup() {
 	fi
 
 	[ -d "$TMUXER_CONFIG" ] || mkdir -m 700 "$TMUXER_CONFIG"
-
-	TMUXER_REPOSITORIES="$TMUXER_CONFIG/sessions"
-	export TMUXER_REPOSITORIES
-
-	[ -d "$TMUXER_REPOSITORIES" ] || mkdir "$TMUXER_REPOSITORIES"
+	[ -d "$TMUXER_CONFIG/sessions" ] || mkdir "$TMUXER_CONFIG/sessions"
 }
 
 usage() {
@@ -104,7 +100,7 @@ run() {
 			if [ -n "$TMUX" ]; then
 				# When invoked from inside tmux, create a new window just to run the
 				# selection menu
-				tmux new-window -n 'choose session' "TMUXER_ROOT='$TMUXER_ROOT' sh -e '$script'"
+				tmux new-window -n 'choose session' "TMUXER_ROOT='$TMUXER_ROOT' TMUXER_CONFIG='$TMUXER_CONFIG' sh -e '$script'"
 			else
 				# Or just invoke directly
 				sh -e "$script"

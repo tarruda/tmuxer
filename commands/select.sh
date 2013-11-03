@@ -67,7 +67,6 @@ count=0
 
 # Add 
 tmp="$(sh "$TMUXER_ROOT/commands/list-sessions.sh")"
-echo "$tmp"
 while [ ${#tmp} -gt 0 ]; do
 	e="$(h "$tmp")"
 	tmp="$(t "$tmp")"

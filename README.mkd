@@ -17,8 +17,10 @@ The following subcommands are provided:
 This is similar to [tmuxinator](https://github.com/aziz/tmuxinator), but
 uses session scripts instead of YAML configuration files.
 
-Tmuxifier is implemented as a set of pure POSIX-compliant shell scripts that
-should run out-of-box in most UNIX systems.
+Tmuxer is inspired by [tmuxifier](https://github.com/jimeh/tmuxifier), but
+tries to be simpler while allowing more flexibility. It is also implemented as
+a set of pure POSIX-compliant shell scripts that should run out-of-box in most
+UNIX systems.
 
 ## Installation
 
@@ -38,3 +40,47 @@ existing PATH directory will also work:
 ```sh
 ln -s ~/tmuxer/bin/tmuxer ~/bin/tmuxer
 ```
+
+## Usage
+
+####Create sessions
+
+```sh
+tmuxer create [session name]
+```
+will create the session and open the setup script in your $EDITOR
+
+####Switch sessions from tmux
+Add to your .tmux.conf:
+
+```
+bind s run 'tmuxer'
+```
+
+This will give you easy access to the session switch menu
+
+####Close a session
+
+```
+tmuxer close [session name]
+```
+
+If [session name] is omitted, all registered sessions will be closed
+
+####Automatically close all sessions on shutdown
+
+
+Make sure your system's daemon manager calls 'tmuxer close' as your user before
+sending signals to terminate processes. This is system-specific, but heres how
+it might be done on ubuntu:
+
+```sh
+# Add this snippet to '/etc/init/tmuxer.conf'
+description "Cleanly shutdown tmuxer sessions"
+
+start on starting rc
+script
+sudo -E -u [your username] [path to tmuxer install dir]/bin/tmuxer close
+end script
+```
+
