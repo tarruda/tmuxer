@@ -1,22 +1,40 @@
 # tmuxer
 
-> Set of shell scripts that will improve your tmux experience
+Command-line utility that makes easy managing tmux scripted sessions.
+
+The following subcommands are provided:
+
+  - create: Create a scripted session in a repository(~/.tmuxer by default) 
+  - delete: Delete a scripted session
+  - open: Start/attach scripted sessions
+  - close: Gracefully shutdown sessions by invoking session-specific cleanup
+    scripts
+  - edit: Edits a session script
+  - select: Replacement for tmux 'choose-session' that displays a menu
+    for choosing a scripted or running session(with scripted sessions being
+    started automatically if needed)
+
+This is similar to [tmuxinator](https://github.com/aziz/tmuxinator), but
+uses session scripts instead of YAML configuration files.
+
+Tmuxifier is implemented as a set of pure POSIX-compliant shell scripts that
+should run out-of-box in most UNIX systems.
 
 ## Installation
 
 ```sh
-git clone git://github.com/tarruda/tmuxer ~/.tmuxer
+git clone git://github.com/tarruda/tmuxer ~/tmuxer
 ```
 
-Then make sure ~/.tmuxer/bin/tmuxer is found on the PATH:
+Then make sure ~/tmuxer/bin/tmuxer is found on the PATH:
 
 ```sh
-echo 'export PATH="$HOME/.tmuxer/bin:\$PATH"' >> [your shell initialization file]
+echo 'export PATH="$HOME/tmuxer/bin:\$PATH"' >> [your shell initialization file]
 ```
 
 If you have the 'readlink' command installed, then adding a symlink to an
 existing PATH directory will also work:
 
 ```sh
-ln -s ~/.tmuxer/bin/tmuxer ~/bin/tmuxer
+ln -s ~/tmuxer/bin/tmuxer ~/bin/tmuxer
 ```
