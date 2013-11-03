@@ -1,6 +1,6 @@
 # tmuxer
 
-> Shell scripts that improve your tmux experience
+> Set of shell scripts that will improve your tmux experience
 
 ## Installation
 
