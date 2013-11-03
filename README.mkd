@@ -69,7 +69,6 @@ If [session name] is omitted, all registered sessions will be closed
 
 ####Automatically close all sessions on shutdown
 
-
 Make sure your system's daemon manager calls 'tmuxer close' as your user before
 sending signals to terminate processes. This is system-specific, but heres how
 it might be done on ubuntu:
@@ -83,4 +82,3 @@ script
 sudo -E -u [your username] [path to tmuxer install dir]/bin/tmuxer close
 end script
 ```
-
