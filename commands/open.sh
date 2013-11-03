@@ -1,5 +1,5 @@
-. "$SMUX_ROOT/lib/command-helpers.sh"
-. "$SMUX_ROOT/lib/script-helpers.sh"
+. "$TMUXER_ROOT/lib/command-helpers.sh"
+. "$TMUXER_ROOT/lib/script-helpers.sh"
 
 shorthelp "Attaches to a tmux session or starts a new one" "$@"
 
@@ -12,7 +12,7 @@ if ! tmux has-session -t "$name" > /dev/null 2>&1; then
 		echo "No windows were created" >&2
 		exit 1
 	fi
-	echo "$name" > "$SMUX_CONFIG/last-session"
+	echo "$name" > "$TMUXER_CONFIG/last-session"
 fi
 
 if [ -z "$TMUX" ]; then

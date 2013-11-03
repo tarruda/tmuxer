@@ -1,10 +1,10 @@
 # Basic scripted session template for writing some code with vim. 
 #
 # To edit this file later:
-#     $ smux edit [scripted session name] setup.sh
+#     $ tmuxer edit [scripted session name] setup.sh
 #
 # To edit the teardown script:
-#     $ smux edit [scripted session name] teardown.sh
+#     $ tmuxer edit [scripted session name] teardown.sh
 
 # If you want the session to have a default directory, set the session_root
 # variable first

@@ -1,8 +1,8 @@
-. "$SMUX_ROOT/lib/command-helpers.sh"
+. "$TMUXER_ROOT/lib/command-helpers.sh"
 
 shorthelp "Prints available commands with short help" "$@"
 
-for file in "$SMUX_ROOT/commands"/*.sh; do
+for file in "$TMUXER_ROOT/commands"/*.sh; do
 	cmd="${file##*/}"
 	cmd="${cmd%.sh}"
 	cmd="$(printf "%-15s" "$cmd")"

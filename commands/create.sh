@@ -1,4 +1,4 @@
-. "$SMUX_ROOT/lib/command-helpers.sh"
+. "$TMUXER_ROOT/lib/command-helpers.sh"
 
 shorthelp "Create and register a new session" "$@"
 
@@ -18,7 +18,7 @@ if [ -z "$1" ]; then
 fi
 
 name="$1"
-location="$SMUX_REPOSITORIES/$name"
+location="$TMUXER_REPOSITORIES/$name"
 
 if [ -e "$location" ]; then
 	echo "Session '$name' already exists" >&2
@@ -28,7 +28,7 @@ fi
 [ -z "$o_repository" ] && o_repository="$location" && default_repo=1
 [ -z "$o_template" ] && o_template="vim"
 
-template_dir="$SMUX_ROOT/templates/$o_template"
+template_dir="$TMUXER_ROOT/templates/$o_template"
 
 if [ ! -d "$template_dir" ]; then
 	echo "Template '$o_template' not found" >&2

@@ -1,11 +1,11 @@
-#compdef smux
+#compdef tmuxer
 
 local curcontext=$curcontext sessions state line 
 
-if which smux &> /dev/null; then
-	sessions=$(smux list-sessions)
+if which tmuxer &> /dev/null; then
+	sessions=$(tmuxer list-sessions)
 	cmds=()
-	smux list-commands | while read name desc; do
+	tmuxer list-commands | while read name desc; do
 		cmds+="$name:$desc"
 	done
 fi
@@ -23,7 +23,7 @@ elif (( CURRENT == 3 )); then
 elif (( CURRENT == 4 )); then
 	case $words[2] in
 		edit)
-			_arguments "3:Files:($(smux list-files $words[3]))"
+			_arguments "3:Files:($(tmuxer list-files $words[3]))"
 		;;
 	esac
 fi

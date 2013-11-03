@@ -1,5 +1,5 @@
-. "$SMUX_ROOT/lib/command-helpers.sh"
-. "$SMUX_ROOT/lib/script-helpers.sh"
+. "$TMUXER_ROOT/lib/command-helpers.sh"
+. "$TMUXER_ROOT/lib/script-helpers.sh"
 
 shorthelp "Shutdown session, invoking the teardown script if available" "$@"
 
@@ -7,7 +7,7 @@ shorthelp "Shutdown session, invoking the teardown script if available" "$@"
 if [ -n "$1" ]; then
 	sessions="$1"
 else
-	sessions="$(sh $SMUX_ROOT/commands/list-sessions.sh)"
+	sessions="$(sh $TMUXER_ROOT/commands/list-sessions.sh)"
 fi
 
 for name in $sessions; do

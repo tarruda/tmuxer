@@ -1,4 +1,4 @@
-. "$SMUX_ROOT/lib/command-helpers.sh"
+. "$TMUXER_ROOT/lib/command-helpers.sh"
 
 shorthelp "Edits a script in the session repository" "$@"
 

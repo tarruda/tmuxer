@@ -1,4 +1,4 @@
-. "$SMUX_ROOT/lib/command-helpers.sh"
+. "$TMUXER_ROOT/lib/command-helpers.sh"
 
 shorthelp "Displays a menu to interactively select a session" "$@"
 
@@ -48,11 +48,12 @@ ids=""
 count=0
 
 # last opened session
-[ -r "$SMUX_CONFIG/last-session" ] &&\
- 	last_session="$(cat "$SMUX_CONFIG/last-session" 2> /dev/null)"
+[ -r "$TMUXER_CONFIG/last-session" ] &&\
+ 	last_session="$(cat "$TMUXER_CONFIG/last-session" 2> /dev/null)"
 
 # Add 
-tmp="$(sh "$SMUX_ROOT/commands/list-sessions.sh")"
+tmp="$(sh "$TMUXER_ROOT/commands/list-sessions.sh")"
+echo "$tmp"
 while [ ${#tmp} -gt 0 ]; do
 	e="$(h "$tmp")"
 	tmp="$(t "$tmp")"
@@ -172,5 +173,5 @@ if [ $index -ge $unmanaged_index ]; then
 		tmux switch-client -t "$e"
 	fi
 else
-	sh "$SMUX_ROOT/commands/open.sh"
+	sh "$TMUXER_ROOT/commands/open.sh" "$e"
 fi

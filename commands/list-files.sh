@@ -1,4 +1,4 @@
-. "$SMUX_ROOT/lib/command-helpers.sh"
+. "$TMUXER_ROOT/lib/command-helpers.sh"
 
 shorthelp "Prints all files in a session's repository" "$@"
 

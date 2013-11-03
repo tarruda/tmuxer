@@ -46,7 +46,7 @@ check_session() {
 	fi
 
 	name="$1"
-	location="$SMUX_REPOSITORIES/$name"
+	location="$TMUXER_REPOSITORIES/$name"
 
 	if [ ! -e "$location" ]; then
 		echo "Session '$name' doesn't exist"

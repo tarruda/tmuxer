@@ -22,7 +22,7 @@ check() {
 
 	for cmd in 'tput' 'stty' 'sed' 'dd'; do
 		if ! which "$cmd" > /dev/null 2>&1; then
-			echo "smux depends on the '$cmd' command, but it doesn't appear to be installed "
+			echo "tmuxer depends on the '$cmd' command, but it doesn't appear to be installed "
 			exit 1
 		fi
 	done
@@ -47,29 +47,33 @@ setup() {
 	if which readlink > /dev/null 2>&1; then
 		path="$(readlink -f "$path")"
 	fi
+	if [ -L "$path" ]; then
+		echo "'$path' is a symlink and the 'readlink' command isn't available"
+		exit 1
+	fi
 	path="${path%/*}"
 	path="$(cd "$path"; pwd)"
-	SMUX_ROOT="${path%/*}" 
-	export SMUX_ROOT
+	TMUXER_ROOT="${path%/*}" 
+	export TMUXER_ROOT
 
-	if [ -z "$SMUX_CONFIG" ]; then
-		SMUX_CONFIG="$HOME/.smux"
-		export SMUX_CONFIG
+	if [ -z "$TMUXER_CONFIG" ]; then
+		TMUXER_CONFIG="$HOME/.tmuxer"
+		export TMUXER_CONFIG
 	fi
 
-	[ -d "$SMUX_CONFIG" ] || mkdir -m 700 "$SMUX_CONFIG"
+	[ -d "$TMUXER_CONFIG" ] || mkdir -m 700 "$TMUXER_CONFIG"
 
-	SMUX_REPOSITORIES="$SMUX_CONFIG/sessions"
-	export SMUX_REPOSITORIES
+	TMUXER_REPOSITORIES="$TMUXER_CONFIG/sessions"
+	export TMUXER_REPOSITORIES
 
-	[ -d "$SMUX_REPOSITORIES" ] || mkdir "$SMUX_REPOSITORIES"
+	[ -d "$TMUXER_REPOSITORIES" ] || mkdir "$TMUXER_REPOSITORIES"
 }
 
 usage() {
-	echo "Usage: smux [<command>] [<args>]\n" >&2
+	echo "Usage: tmuxer [<command>] [<args>]\n" >&2
   echo "Where command can be one of:\n" >&2
 
-	sh -e "$SMUX_ROOT/commands/list-commands.sh" | while read description; do
+	sh -e "$TMUXER_ROOT/commands/list-commands.sh" | while read description; do
 		echo "  $description" >&2
 	done
 	echo
@@ -79,7 +83,7 @@ run() {
 	cmd="$1"
 	[ -z "$cmd" ] && cmd="select"
 
-	script="$SMUX_ROOT/commands/${cmd}.sh"
+	script="$TMUXER_ROOT/commands/${cmd}.sh"
 	if [ ! -r "$script" ]; then
 	 	usage
 		exit 1
@@ -99,7 +103,7 @@ run() {
 			if [ -n "$TMUX" ]; then
 				# When invoked from inside tmux, create a new window just to run the
 				# selection menu
-				tmux new-window -n 'choose session' "SMUX_ROOT='$SMUX_ROOT' sh -e '$script'"
+				tmux new-window -n 'choose session' "TMUXER_ROOT='$TMUXER_ROOT' sh -e '$script'"
 			else
 				# Or just invoke directly
 				sh -e "$script"

@@ -1,21 +1,22 @@
-# smux
+# tmuxer
 
-> Shell scripts to improve your tmux experience
+> Shell scripts that improve your tmux experience
 
 ## Installation
 
 ```sh
-git clone git://github.com/tarruda/smux ~/.smux
+git clone git://github.com/tarruda/tmuxer ~/.tmuxer
 ```
 
-Then make sure ~/.smux/bin/smux is found on the PATH:
+Then make sure ~/.tmuxer/bin/tmuxer is found on the PATH:
 
 ```sh
-echo 'export PATH="$HOME/.smux/bin:\$PATH"' >> [your shell initialization file]
+echo 'export PATH="$HOME/.tmuxer/bin:\$PATH"' >> [your shell initialization file]
 ```
 
-Adding a symlink to an existing PATH directory will also do the trick
+If you have the 'readlink' command installed, then adding a symlink to an
+existing PATH directory will also work:
 
 ```sh
-ln -s ~/.smux/bin/smux ~/bin/smux
+ln -s ~/.tmuxer/bin/tmuxer ~/bin/tmuxer
 ```
