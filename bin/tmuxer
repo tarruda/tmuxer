@@ -28,8 +28,17 @@ check() {
 	done
 
 	if [ -z "$EDITOR" ]; then
-		echo 'Set your $EDITOR environment variable'
-		exit 1
+		if which nano > /dev/null 2>&1; then
+			EDITOR=nano
+		elif which vim > /dev/null 2>&1; then
+			EDITOR=vim
+		elif which vi > /dev/null 2>&1; then
+			EDITOR=vi
+		else
+			echo 'Set your $EDITOR environment variable'
+			exit 1
+		fi
+		export EDITOR
 	fi
 }
 
@@ -78,7 +87,7 @@ usage() {
 
 run() {
 	cmd="$1"
-	[ -z "$cmd" ] && cmd="select"
+	[ -z "$cmd" ] && cmd="attach"
 
 	script="$TMUXER_ROOT/commands/${cmd}.sh"
 	if [ ! -r "$script" ]; then
@@ -92,19 +101,6 @@ run() {
 		help)
 			usage
 			exit
-			;;
-		select)
-			if [ "$1" = "--shorthelp" ]; then
-				sh "$script" "$@"
-			fi
-			if [ -n "$TMUX" ]; then
-				# When invoked from inside tmux, create a new window just to run the
-				# selection menu
-				tmux new-window -n 'choose session' "TMUXER_ROOT='$TMUXER_ROOT' TMUXER_CONFIG='$TMUXER_CONFIG' sh -e '$script'"
-			else
-				# Or just invoke directly
-				sh -e "$script"
-			fi
 			;;
 		*)
 			sh -e "$script" "$@"

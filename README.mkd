@@ -10,7 +10,7 @@ The following subcommands are provided:
   - close: Gracefully shutdown sessions by invoking session-specific cleanup
     scripts
   - edit: Edits a session script
-  - select: Replacement for tmux 'choose-session' that displays a menu
+  - choose-session: Replacement for tmux 'choose-session' that displays a menu
     for choosing a scripted or running session(with scripted sessions being
     started automatically if needed)
 
@@ -54,7 +54,7 @@ will create the session and open the setup script in your $EDITOR
 Add to your .tmux.conf:
 
 ```
-bind s run 'tmuxer'
+bind s run 'tmuxer choose-session'
 ```
 
 This will give you easy access to the session switch menu

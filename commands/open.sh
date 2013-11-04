@@ -3,10 +3,14 @@
 
 shorthelp "Attaches to a tmux session or starts a new one" "$@"
 
+# extract the session name if invoked from 'select'
+name="${1%%[(]*}"
 
-check_session "$@"
+# remove trailing spaces
+name="$(echo "$name" | sed -e 's/\s*$//')"
 
-if ! tmux has-session -t "$name" > /dev/null 2>&1; then
+if ! tmux has-session -t "$name" 2> /dev/null; then
+	check_session "$@"
 	. "$repository/setup.sh"
 	if [ -z "$session_id" ]; then
 		echo "No windows were created" >&2
