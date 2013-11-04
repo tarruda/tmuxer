@@ -10,7 +10,7 @@ name="${1%%[(]*}"
 name="$(echo "$name" | sed -e 's/\s*$//')"
 
 if ! tmux has-session -t "$name" 2> /dev/null; then
-	check_session "$@"
+	check_session "$name"
 	. "$repository/setup.sh"
 	if [ -z "$session_id" ]; then
 		echo "No windows were created" >&2
