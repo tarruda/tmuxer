@@ -125,8 +125,19 @@ choose_outside_tmux() {
 choose_inside_tmux() {
 	# Use tmux builtin 'choose-list' to display an interactive menu that will
 	# call the 'open' command
-	tmux choose-list -l "$sessions" "run-shell \"TMUXER_ROOT='$TMUXER_ROOT'\
-	 	TMUXER_CONFIG='$TMUXER_CONFIG' sh '$TMUXER_ROOT/commands/open.sh' '%%'\""
+	if [ $selected -gt 0 ]; then
+		keys=''
+		while [ $selected -gt 0 ]; do
+			keys="$keys Down"
+			selected=$((selected - 1))
+		done
+		tmux choose-list -l "$sessions" "run-shell \"TMUXER_ROOT='$TMUXER_ROOT'\
+			TMUXER_CONFIG='$TMUXER_CONFIG'\
+		 	sh '$TMUXER_ROOT/commands/open.sh' '%%'\"" \; send-keys $keys
+	else
+		tmux choose-list -l "$sessions" "run-shell \"TMUXER_ROOT='$TMUXER_ROOT'\
+			TMUXER_CONFIG='$TMUXER_CONFIG' sh '$TMUXER_ROOT/commands/open.sh' '%%'\""
+	fi
 }
 
 format_sessions
