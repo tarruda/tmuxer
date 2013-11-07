@@ -103,7 +103,7 @@ format_sessions() {
 		else
 			stat="(closed)"
 		fi
-		e="$(printf "%-25s %s" "$e" "$stat")"
+		e="$(printf "%-30s %s" "$e" "$stat")"
 		sessions="$sessions$e,"
 		ids="$ids $id"
 		count=$((count + 1))
@@ -123,7 +123,7 @@ format_sessions() {
 		if [ -z "$found" ]; then
 			[ "$id" = "$running_session_id" ] && selected=$count
 			stat="(unmanaged) (id: $id)"
-			name="$(printf "%-25s %s" "$name" "$stat")"
+			name="$(printf "%-30s %s" "$name" "$stat")"
 			sessions="$sessions$name,"
 			count=$((count + 1))
 		fi
