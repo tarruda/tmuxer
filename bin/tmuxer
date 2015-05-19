@@ -13,10 +13,15 @@ check() {
 	set $tmux_version
 
 	tmux_version=$2
-	tmux_version=$(echo "$tmux_version" | sed -e 's/\.//g')
+	tmux_version=$(echo "$tmux_version" | sed -e 's/\.//g' -e 's/a$//g')
 
 	if [ $tmux_version -lt 17 ]; then
 		echo 'tmux version must be at least 1.7' >&2
+		exit 1
+	fi
+
+	if [ $tmux_version -gt 19 ]; then
+		echo 'tmux version must be at most 1.9a' >&2
 		exit 1
 	fi
 
