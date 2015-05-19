@@ -1,3 +1,5 @@
+**Warning: This doesn't work with tmux 2.0 which removed choose-list(http://sourceforge.net/p/tmux/mailman/message/32271958/), downgrade to 1.9a if you need this tool.**
+
 # tmuxer
 
 Command-line utility that makes easy to manage tmux scripted sessions.
